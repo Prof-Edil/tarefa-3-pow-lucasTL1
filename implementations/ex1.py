@@ -46,7 +46,7 @@ def main():
     get_all_ancestors(required_txid, mempool, set(), ordered_req_family)
     
     for txid in ordered_req_family:
-        if txid in mempool:  # Se o ancestral estiver no mempool ativo
+        if txid in mempool:  
             tx_data = mempool[txid]
             block_txids.append(txid)
             block_set.add(txid)
@@ -56,8 +56,6 @@ def main():
     print(f"Após incluir a obrigatória e ancestrais:")
     print(f"Peso: {current_weight} | Taxas: {current_fees} sats")
 
-    
-    # Ordena todas as transações do mempool pela razão (fee / weight) decrescente
     available_txs = sorted(
         [tx for tx in mempool if tx not in block_set],
         key=lambda tx: mempool[tx]['fee'] / mempool[tx]['weight'],
@@ -70,7 +68,6 @@ def main():
         if current_weight + tx_data['weight'] > 4000000:
             continue
             
-        # Verifica se todos os pais dessa transação já estão no bloco
         parents_valid = all(parent in block_set for parent in tx_data['parents'])
         
         if parents_valid:
